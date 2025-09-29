@@ -21,6 +21,8 @@ ysampler) rather than (xtyys, ytsys)'''
 #                   to 2.0, necessitating a change in the saturation correction
 #                   factor in autocorr_desat().  This is applied to all data
 #                   after 2021-05-16, when the change was made.
+# SY, 2025-09-29 -- Added handling for NaNs in avXdata to prevent NaN propagation.
+#                   This is done by masking NaN/Inf values in visibilities before averaging with ma.average and using np.nansum for sampler arrays (px, py) to prevent NaN propagation
 
 #needed for file creation
 import time, os
@@ -114,11 +116,12 @@ def avXdata(x, nsec=60):
             nsj = float(len(ssj))
             nsjarray[j] = nsj
             xxj = x['x'][:,:,:,ssj]
-            outx[:,:,:,j]=ma.average(xxj, axis=3)
+            xxj = ma.masked_invalid(xxj)
+            outx[:,:,:,j]=ma.filled(ma.average(xxj, axis=3), np.nan)
             pxj = x['px'][:,ssj]
-            outpx[:,j]=np.sum(pxj, axis=1)
+            outpx[:,j]=np.np.nansum(pxj, axis=1)
             pyj = x['py'][:,ssj]
-            outpy[:,j]=np.sum(pyj, axis=1)
+            outpy[:,j]=np.np.nansum(pyj, axis=1)
         #endif
     #endfor
     #time arrays, delays and uvw are interpolated: to interval center times

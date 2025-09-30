@@ -119,9 +119,9 @@ def avXdata(x, nsec=60):
             xxj = ma.masked_invalid(xxj)
             outx[:,:,:,j]=ma.filled(ma.average(xxj, axis=3), np.nan)
             pxj = x['px'][:,ssj]
-            outpx[:,j]=np.np.nansum(pxj, axis=1)
+            outpx[:,j]=np.nansum(pxj, axis=1)
             pyj = x['py'][:,ssj]
-            outpy[:,j]=np.np.nansum(pyj, axis=1)
+            outpy[:,j]=np.nansum(pyj, axis=1)
         #endif
     #endfor
     #time arrays, delays and uvw are interpolated: to interval center times
